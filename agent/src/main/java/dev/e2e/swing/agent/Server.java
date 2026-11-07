@@ -17,7 +17,8 @@ final class Server {
     private final ServerSocket socket;
     private final String token;
     private static final int AUTH_TIMEOUT_MILLIS = 5000;
-    private static final int MAX_LINE_BYTES = 4096;
+    private static final int MAX_AUTH_LINE_BYTES = 4096;
+    private static final int MAX_REQUEST_LINE_BYTES = 1024 * 1024;
 
     private Server(ServerSocket socket, String token) {
         this.socket = socket;
@@ -56,7 +57,7 @@ final class Server {
         InputStream in = new BufferedInputStream(client.getInputStream());
         OutputStream out = client.getOutputStream();
 
-        String line = readLine(in);
+        String line = readLine(in, MAX_AUTH_LINE_BYTES);
         if (line == null) {
             return;
         }
@@ -73,7 +74,7 @@ final class Server {
 
         // The client is authenticated and may stay idle between requests.
         client.setSoTimeout(0);
-        while ((line = readLine(in)) != null) {
+        while ((line = readLine(in, MAX_REQUEST_LINE_BYTES)) != null) {
             send(out, dispatch(line));
         }
 
@@ -85,7 +86,11 @@ final class Server {
                 || !(request.get("id") instanceof Long id)) {
             throw new IOException("malformed request");
         }
-        if (!"snapshot".equals(request.get("method"))) {
+        var method = request.get("method");
+        if ("perform".equals(method)) {
+            return perform(id, request.get("params"));
+        }
+        if (!"snapshot".equals(method)) {
             return error(id, -32601, "method not found");
         }
         try {
@@ -96,6 +101,28 @@ final class Server {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return error(id, -32603, "snapshot interrupted");
+        }
+    }
+
+    /** Runs one action. Logs only the failure's class: its message could quote the value of a fill. */
+    private static Map<String, Object> perform(Long id, Object params) {
+        if (!(params instanceof Map<?, ?> fields)
+                || !(fields.get("node") instanceof String node)
+                || !(fields.get("action") instanceof String action)) {
+            return error(id, Perform.INVALID_PARAMS, "perform needs a node and an action");
+        }
+        String value = fields.get("value") instanceof String text ? text : null;
+        try {
+            Perform.run(node, action, value);
+            return result(id, Map.of());
+        } catch (Perform.Refused e) {
+            return error(id, e.code, e.getMessage());
+        } catch (InvocationTargetException e) {
+            System.err.println("e2e-swing-agent: perform failed: " + e.getCause().getClass().getName());
+            return error(id, -32603, "perform failed");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return error(id, -32603, "perform interrupted");
         }
     }
 
@@ -136,10 +163,10 @@ final class Server {
      * Reads up to the next {@code \n} and decodes the bytes as UTF-8. The newline is not included.
      *
      * @return the line, or null if the client disconnected between lines
-     * @throws IOException if the line exceeds {@link #MAX_LINE_BYTES} bytes, the stream ends
+     * @throws IOException if the line exceeds {@code maxBytes} bytes, the stream ends
      *     before a newline, or the read times out
      */
-    private static String readLine(InputStream in) throws IOException{
+    private static String readLine(InputStream in, int maxBytes) throws IOException{
         var bytes = new ByteArrayOutputStream();
         while (true) {
             int b = in.read();
@@ -152,7 +179,7 @@ final class Server {
             if (b == '\n') {
                 return bytes.toString(StandardCharsets.UTF_8);
             }
-            if (bytes.size() == MAX_LINE_BYTES) {
+            if (bytes.size() == maxBytes) {
                 throw new IOException("line too long");
             }
             bytes.write(b);

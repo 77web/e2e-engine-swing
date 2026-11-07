@@ -50,6 +50,7 @@ final class Snapshot {
     }
 
     private static Map<String, Object> readWindows() {
+        NodeIds.startSnapshot();
         var windows = new ArrayList<Object>();
         for (Window window : Window.getWindows()) {
             if (window.isShowing()) {
@@ -70,6 +71,7 @@ final class Snapshot {
 
     private static Map<String, Object> readNode(Accessible accessible, AccessibleContext context) {
         var node = new LinkedHashMap<String, Object>();
+        node.put("id", NodeIds.idOf(accessible));
         AccessibleRole role = context.getAccessibleRole();
         if (role != null) {
             node.put("role", role.toDisplayString(NAMES_LOCALE));
