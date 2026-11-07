@@ -107,13 +107,12 @@ final class Server {
     /** Runs one action. Logs only the failure's class: its message could quote the value of a fill. */
     private static Map<String, Object> perform(Long id, Object params) {
         if (!(params instanceof Map<?, ?> fields)
-                || !(fields.get("node") instanceof String node)
-                || !(fields.get("action") instanceof String action)) {
-            return error(id, Perform.INVALID_PARAMS, "perform needs a node and an action");
+                || !(fields.get("action") instanceof String)
+                || (fields.get("node") != null && !(fields.get("node") instanceof String))) {
+            return error(id, Perform.INVALID_PARAMS, "perform needs an action, and a node id unless it swipes the window");
         }
-        String value = fields.get("value") instanceof String text ? text : null;
         try {
-            Perform.run(node, action, value);
+            Perform.run(fields);
             return result(id, Map.of());
         } catch (Perform.Refused e) {
             return error(id, e.code, e.getMessage());
