@@ -1,0 +1,14 @@
+screen
+  window "Swing for Test" #main-window
+    tablist "Sign in" #tabs
+      tab "Sign in" [selected]
+        label "Username"
+        textbox "Username" value="" #username
+        label "Password"
+        textbox "Password" [secure] purpose=password #password
+        label "Role"
+        combobox "Role" [expanded=false] #role
+        checkbox "Remember me" [checked=false] #remember
+        button "Sign in" #sign-in
+        label "Status" text=" " #status
+      tab "Todos"

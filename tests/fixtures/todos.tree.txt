@@ -1,0 +1,11 @@
+screen
+  window "Swing for Test" #main-window
+    tablist "Todos" #tabs
+      tab "Sign in"
+      tab "Todos" [selected]
+        textbox "New todo" value="" #todo-input
+        button "Add" #todo-add
+        list "Todos" #todo-list
+        button "Remove selected" #todo-remove
+        button "Clear all" #todo-clear
+        label "Item count" text="0 items" #todo-count
