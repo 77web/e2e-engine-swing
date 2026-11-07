@@ -1,5 +1,5 @@
 {
-  "name": "e2e-engine-swing",
+  "name": "@77web/e2e-engine-swing",
   "version": "0.0.0",
   "private": true,
   "description": "Java Swing engine for e2e agentic end-to-end testing",
