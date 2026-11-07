@@ -58,6 +58,51 @@ describe('projectWindows', () => {
     expect(actual.root.children?.[0]?.children?.[0]?.states?.selected).toBeUndefined();
     expect(actual.root.children?.[0]?.children?.[1]?.states?.selected).toBe(true);
   });
+
+  it('keeps the items of a showing list that are scrolled out of view', () => {
+    const actual = projectWindows([node({
+      role: 'list',
+      children: [
+        node({ role: 'list item' }),
+        node({ role: 'list item', states: ['showing', 'enabled', 'selected'] }),
+        node({ role: 'list item', name: 'scrolled out', states: ['enabled'] }), // showing = false
+      ] })], 'test');
+    const items = actual.root.children?.[0]?.children;
+    expect(items).toHaveLength(3);
+    const scrolledOut = items?.[2];
+    expect(scrolledOut?.name).toBe('scrolled out');
+    expect(scrolledOut?.role).toBe('option');
+    // Like the web engine, an item out of view is not hidden: tap scrolls it in first.
+    expect(scrolledOut?.states?.hidden).toBeUndefined();
+  });
+
+  it('drops the children of a panel that is not showing', () => {
+    const actual = projectWindows([node({
+      name: 'window',
+      children: [
+        node({ role: 'panel', name: 'hidden panel', states: ['enabled'], children: [node({ name: 'inner' })] }),
+        node({ name: 'kept' }),
+      ],
+    })], 'test');
+    expect(actual.root.children?.[0]?.children?.map((child) => child.name)).toEqual(['kept']);
+  });
+
+  it('keeps only the direct children of a list, not grandchildren that are not showing', () => {
+    const actual = projectWindows([node({
+      role: 'list',
+      children: [node({
+        role: 'list item',
+        states: ['enabled'],
+        children: [
+          node({ name: 'grandchild', states: ['enabled'] }), // showing = false
+          node({ name: 'shown grandchild' }),
+        ],
+      })],
+    })], 'test');
+    const item = actual.root.children?.[0]?.children?.[0];
+    expect(item?.role).toBe('option');
+    expect(item?.children?.map((child) => child.name)).toEqual(['shown grandchild']);
+  });
 });
 
 describe('usableTestId', () => {

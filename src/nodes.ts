@@ -36,7 +36,7 @@ export function projectWindows(windows: readonly RawNode[], revision: string): E
       },
       role: "screen",
       rect: {x: 0, y: 0, ...viewport },
-      children: windows.flatMap((w) => project(w, revision, origin))
+      children: windows.flatMap((w) => project(w, revision, origin, false))
     },
     viewport,
     location: windows.find((w) => w.states.includes("active"))?.name ?? windows[windows.length - 1]?.name,
@@ -60,12 +60,13 @@ function calculateBounds(windows: readonly RawNode[]) {
 
 const COLLAPSIBLE_ROLES = new Set(['panel', 'layered pane', 'root pane', 'viewport', 'scroll pane', 'filler', 'icon']);
 
-function project(raw: RawNode, revision: string, origin: {x: number, y: number}): SemanticNode[] {
-  if (!raw.states.includes('showing')) return [];
+function project(raw: RawNode, revision: string, origin: {x: number, y: number}, isChildOfList: boolean): SemanticNode[] {
+  // Like the web engine, keep list items scrolled out of view; tap scrolls them in first.
+  if (!raw.states.includes('showing') && !isChildOfList) return [];
   const role =  raw.role ? (roleMap[raw.role] ?? raw.role) : undefined;
   const name = trimText(raw.name || undefined, OBSERVED_NAME_LIMIT);
   const testId = usableTestId(raw.testId);
-  const children = raw.children.flatMap((c) => project(c, revision, origin));
+  const children = raw.children.flatMap((c) => project(c, revision, origin, raw.role === 'list'));
   if (name === undefined && testId === undefined && COLLAPSIBLE_ROLES.has(raw.role ?? "")) return children;
 
   let text = raw.secure ? undefined : raw.text;
