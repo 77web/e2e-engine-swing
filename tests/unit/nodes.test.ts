@@ -13,6 +13,21 @@ describe('projectWindows', () => {
     expect(actual.location).toBe('first');
   });
 
+  it('uses the newest modal dialog as the location when no window is active', () => {
+    const actual = projectWindows([
+      node({ name: 'main' }),
+      node({ name: 'older dialog', role: 'dialog', states: ['showing', 'enabled', 'modal'] }),
+      node({ name: 'newer dialog', role: 'dialog', states: ['showing', 'enabled', 'modal'] }),
+      node({ name: 'tool window' }),
+    ], 'test');
+    expect(actual.location).toBe('newer dialog');
+  });
+
+  it('uses the newest window as the location when none is active or modal', () => {
+    const actual = projectWindows([node({ name: 'first' }), node({ name: 'last' })], 'test');
+    expect(actual.location).toBe('last');
+  });
+
   it('handles no windows', () => {
     const actual = projectWindows([], 'test');
     expect(actual.viewport).toEqual({ width: 0, height: 0 });

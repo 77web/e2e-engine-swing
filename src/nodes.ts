@@ -24,13 +24,16 @@ const roleMap: Record<string, string> = {
   "list": "listbox",
 };
 
+/** The id of the screen root, the same in every observation; `perform(root, swipe)` is the viewport swipe. */
+export const ROOT_ID = 'root';
+
 export function projectWindows(windows: readonly RawNode[], revision: string): EngineSnapshot {
   const {origin, viewport} = calculateBounds(windows);
 
   return obj({
     root: {
       ref: {
-        id: "root",
+        id: ROOT_ID,
         revision
       },
       role: "screen",
@@ -38,8 +41,20 @@ export function projectWindows(windows: readonly RawNode[], revision: string): E
       children: windows.flatMap((w) => project(w, revision, origin, false))
     },
     viewport,
-    location: windows.find((w) => w.states.includes("active"))?.name ?? windows[windows.length - 1]?.name,
+    location: frontWindow(windows)?.name,
   });
+}
+
+/**
+ * The window the user would see in front, whose title is the location. AWT
+ * has no stacking order, so: the active window; when the app is not active,
+ * the newest modal dialog; else the newest window. The agent lists only
+ * showing windows, oldest first, and its whole-screen swipe picks the same way.
+ */
+export function frontWindow(windows: readonly RawNode[]): RawNode | undefined {
+  return windows.find((w) => w.states.includes('active'))
+    ?? windows.findLast((w) => w.states.includes('modal'))
+    ?? windows.at(-1);
 }
 
 function calculateBounds(windows: readonly RawNode[]) {

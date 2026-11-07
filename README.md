@@ -4,7 +4,7 @@ An experimental engine that lets [e2e](https://github.com/tester-army/e2e) test 
 
 > **This is not an official TesterArmy project.** It is an independent, community-made engine built on e2e's public engine contract. It is not affiliated with or endorsed by TesterArmy, Inc.
 
-> **Status: early and experimental.** It is not published to npm yet, and the API may change. The engine supports only `tap` and `fill` so far. Other actions and keyboard input already work in the Java agent but are not wired into the engine yet.
+> **Status: early and experimental.** It is not published to npm yet, and the API may change. The engine supports `tap`, `doubleTap`, `secondaryTap`, `fill`, `clear`, `press`, `check`, `uncheck`, `focus`, `selectOption`, `swipe`, and `scrollIntoView`, and keyboard input to the focused component. It does not support `longPress`, `hover`, `dragTo`, `setInputFiles`, tap modifiers, actions at a point, or screenshots yet.
 
 ## How it works
 
@@ -110,7 +110,7 @@ test('signs in, then adds a todo', async ({ agent, screen }) => {
 });
 ```
 
-The agent reads the same Swing accessibility tree as the locators, as a redacted text snapshot. The engine offers it the `tap` and `type` tools for now (`type_secret` for a `Secret` param), and no screenshots, so `vision` is not available.
+The agent reads the same Swing accessibility tree as the locators, as a redacted text snapshot. The engine offers it the tools those actions unlock, such as `tap`, `type` (`type_secret` for a `Secret` param), `press`, `select`, `check`, and `scroll`. It offers no screenshots yet, so `vision` is not available.
 
 To make components easy to find, give them names (`setName`) and accessible names. A `JLabel` bound with `setLabelFor` supplies the accessible name of its field.
 

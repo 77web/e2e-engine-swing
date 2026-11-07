@@ -3,7 +3,8 @@
  *
  * Every attempt gets a fresh JVM: `startAttempt` launches the app under the
  * agent and waits for its first window, `endAttempt` stops it. Observation,
- * location, and actions all go through the agent's snapshot ids.
+ * location, and actions all go through the agent's snapshot ids; keyboard
+ * input goes to whatever the agent holds as focused.
  */
 
 import { createRequire } from 'node:module';
@@ -19,14 +20,15 @@ import {
   type EngineHandle,
   type EngineInitInfo,
   type EngineSnapshot,
+  type Key,
   type LocatorAction,
-  type LocatorActionKind,
   type NodeRef,
   type OperationContext,
   type SemanticNode,
 } from 'e2e/engine';
-import { connectAgent, type AgentClient } from './client.ts';
-import { projectWindows, type RawNode } from './nodes.ts';
+import { ACTIONS, keyboardPressParams, keyboardTypeParams, performParams } from './actions.ts';
+import { connectAgent, type AgentClient, type CallOptions } from './client.ts';
+import { projectWindows, ROOT_ID, type RawNode } from './nodes.ts';
 import { DEFAULT_AGENT_JAR, launchJvm, resolveJava, type LaunchOptions, type SwingProcess } from './process.ts';
 
 export interface SwingOptions {
@@ -38,8 +40,6 @@ export interface SwingOptions {
 
 const DEFAULT_START_TIMEOUT_MS = 20_000;
 const WINDOW_POLL_MS = 100;
-/** The actions the agent performs today. */
-const ACTIONS: readonly LocatorActionKind[] = ['tap', 'fill'];
 
 /** How the engine starts the app and reaches the agent; tests replace them. */
 export interface SwingDependencies {
@@ -153,15 +153,18 @@ export function createSwingEngine(options: SwingOptions, deps: SwingDependencies
 
     async perform(ref: NodeRef, action: LocatorAction, context: OperationContext): Promise<void> {
       const { client } = current();
-      if (ref.id === 'root') {
-        throw new EngineError('UNSUPPORTED_CAPABILITY', `${action.kind} on the screen root is not supported`, { retryable: false });
-      }
-      const params: Record<string, unknown> = { node: ref.id, action: action.kind };
-      if (action.kind === 'fill') params['value'] = action.value;
-      else if (action.kind !== 'tap') {
-        throw new EngineError('UNSUPPORTED_CAPABILITY', `${action.kind} is not supported yet`, { retryable: false });
-      }
-      await client.call('perform', params, { kind: 'action', timeoutMs: context.timeoutMs, signal: context.signal });
+      // A swipe on the root is the viewport swipe; the agent picks the front window's scroll area.
+      const params = performParams(ref.id === ROOT_ID ? undefined : ref.id, action);
+      await client.call('perform', params, actionOptions(context));
+    },
+
+    keyboard: {
+      async type(text: string, { replace }: { readonly replace: boolean }, context: OperationContext): Promise<void> {
+        await current().client.call('keyboard', keyboardTypeParams(text, replace), actionOptions(context));
+      },
+      async press(key: Key, context: OperationContext): Promise<void> {
+        await current().client.call('keyboard', keyboardPressParams(key), actionOptions(context));
+      },
     },
   });
 
@@ -177,6 +180,11 @@ export function createSwingEngine(options: SwingOptions, deps: SwingDependencies
       signal.throwIfAborted();
     }
   }
+}
+
+/** An action may have reached the app before a timeout or a cancel, so it is called as one. */
+function actionOptions(context: OperationContext): CallOptions {
+  return { kind: 'action', timeoutMs: context.timeoutMs, signal: context.signal };
 }
 
 async function readWindows(client: AgentClient, timeoutMs: number, signal?: AbortSignal): Promise<RawNode[]> {

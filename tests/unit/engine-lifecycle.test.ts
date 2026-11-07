@@ -8,6 +8,7 @@ import path from 'node:path';
 import { EngineError, type EngineAttemptContext, type EngineHandle, type EngineInitInfo, type LocatorExpression, type OperationContext } from 'e2e/engine';
 import { describe, expect, it } from 'vitest';
 import type { AgentClient, CallOptions } from '../../src/client.ts';
+import { ACTIONS } from '../../src/actions.ts';
 import { createSwingEngine, swing, type SwingDependencies } from '../../src/engine.ts';
 import type { RawNode } from '../../src/nodes.ts';
 import type { LaunchOptions, SwingProcess } from '../../src/process.ts';
@@ -29,7 +30,7 @@ interface Fake {
   readonly stopped: () => number;
   /** What each `snapshot` answers, in turn; the last one repeats. */
   snapshots: RawNode[][];
-  /** Answers a `perform`; the default succeeds. */
+  /** Answers a `perform` or a `keyboard`; the default succeeds. */
   perform: (params: Readonly<Record<string, unknown>>) => Promise<unknown>;
 }
 
@@ -72,7 +73,7 @@ function fake(): Fake {
           async call<T>(method: string, params: Readonly<Record<string, unknown>>, options: CallOptions): Promise<T> {
             if (!open) throw new EngineError('INVALID_STATE', 'closed', { retryable: false });
             calls.push({ method, params, options });
-            if (method === 'perform') return (await state.perform(params)) as T;
+            if (method === 'perform' || method === 'keyboard') return (await state.perform(params)) as T;
             const windows = state.snapshots.length > 1 ? state.snapshots.shift()! : state.snapshots[0]!;
             return { windows } as T;
           },
@@ -119,10 +120,11 @@ async function rejection(promise: Promise<unknown>): Promise<EngineError> {
 }
 
 describe('swing() options', () => {
-  it('declares observation, location, and the tap and fill actions', () => {
+  it('declares observation, location, keyboard, and the actions of the plan', () => {
     const engine = swing();
-    expect([...engine.capabilities]).toEqual(expect.arrayContaining(['observation', 'actions', 'location']));
-    expect(engine.actions).toEqual(['tap', 'fill']);
+    expect([...engine.capabilities]).toEqual(expect.arrayContaining(['observation', 'actions', 'location', 'keyboard']));
+    expect(engine.actions).toEqual(ACTIONS);
+    expect(engine.tapModifiers).toBeFalsy();
   });
 
   it('refuses unknown options and a bad start timeout', () => {
@@ -244,12 +246,35 @@ describe('perform', () => {
     expect(await rejection(engine.perform!({ id: 'n5', revision: '1' }, { kind: 'tap' }, op()))).toMatchObject({ code: 'NODE_STALE', retryable: true });
   });
 
-  it('refuses an action on the root and an undeclared kind without calling the agent', async () => {
+  it('builds the agent params of each kind', async () => {
+    const { engine, state } = await started();
+    const ref = { id: 'n5', revision: '1' };
+    await engine.perform!(ref, { kind: 'check' }, op());
+    await engine.perform!(ref, { kind: 'selectOption', value: { value: 'Admin' } }, op());
+    await engine.perform!(ref, { kind: 'press', key: 'Escape' }, op());
+
+    expect(state.calls.filter((call) => call.method === 'perform').map((call) => call.params)).toEqual([
+      { node: 'n5', action: 'check' },
+      { node: 'n5', action: 'selectOption', option: { label: 'Admin' } },
+      { node: 'n5', action: 'press', key: { modifiers: [], name: 'Escape' } },
+    ]);
+  });
+
+  it('sends a swipe on the root as the whole-screen swipe, without a node', async () => {
+    const { engine, state } = await started();
+    const { root } = await engine.observe!(op());
+    await engine.perform!(root.ref, { kind: 'swipe', direction: 'down' }, op());
+
+    expect(state.calls.at(-1)).toMatchObject({ method: 'perform', params: { action: 'swipe', direction: 'down' }, options: { kind: 'action' } });
+    expect(state.calls.at(-1)?.params).not.toHaveProperty('node');
+  });
+
+  it('refuses another action on the root and an undeclared kind without calling the agent', async () => {
     const { engine, state } = await started();
     const before = state.calls.length;
 
     expect((await rejection(engine.perform!({ id: 'root', revision: '1' }, { kind: 'tap' }, op()))).code).toBe('UNSUPPORTED_CAPABILITY');
-    expect((await rejection(engine.perform!({ id: 'n5', revision: '1' }, { kind: 'check' }, op()))).code).toBe('UNSUPPORTED_CAPABILITY');
+    expect((await rejection(engine.perform!({ id: 'n5', revision: '1' }, { kind: 'hover' }, op()))).code).toBe('UNSUPPORTED_CAPABILITY');
     expect(state.calls).toHaveLength(before);
   });
 
@@ -258,5 +283,44 @@ describe('perform', () => {
     await engine.init!(initInfo());
 
     expect((await rejection(engine.perform!({ id: 'n5', revision: '1' }, { kind: 'tap' }, op()))).code).toBe('INVALID_STATE');
+  });
+});
+
+describe('keyboard', () => {
+  it('sends type and press to the agent as actions', async () => {
+    const { engine, state } = await started();
+    await engine.keyboard!.type('demo', { replace: true }, op());
+    await engine.keyboard!.press('Shift+Tab', op());
+
+    const keyboard = state.calls.filter((call) => call.method === 'keyboard');
+    expect(keyboard.map((call) => call.params)).toEqual([
+      { action: 'type', text: 'demo', replace: true },
+      { action: 'press', key: { modifiers: ['Shift'], name: 'Tab' } },
+    ]);
+    expect(keyboard.every((call) => call.options.kind === 'action' && call.options.timeoutMs === 4_000)).toBe(true);
+  });
+
+  it('passes the agent refusal through when nothing takes text', async () => {
+    const { engine, state } = await started();
+    state.perform = async () => {
+      throw new EngineError('NOT_ACTIONABLE', 'keyboard: nothing that accepts text has focus', { retryable: false });
+    };
+
+    expect((await rejection(engine.keyboard!.type('secret', { replace: false }, op()))).code).toBe('NOT_ACTIONABLE');
+  });
+
+  it('refuses a key outside the grammar without calling the agent', async () => {
+    const { engine, state } = await started();
+    const before = state.calls.length;
+
+    expect((await rejection(engine.keyboard!.press('Ctrl+a', op()))).code).toBe('UNSUPPORTED_CAPABILITY');
+    expect(state.calls).toHaveLength(before);
+  });
+
+  it('is INVALID_STATE without a running app', async () => {
+    const engine = createSwingEngine({}, fake().deps);
+    await engine.init!(initInfo());
+
+    expect((await rejection(engine.keyboard!.press('Enter', op()))).code).toBe('INVALID_STATE');
   });
 });

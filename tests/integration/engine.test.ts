@@ -1,12 +1,13 @@
 /**
  * Drives `swing()` the way the harness does, against the real test app:
- * init, an attempt, locate, fill, tap, the dialog, and teardown. Opt in with
+ * init, an attempt, locate, the actions and the keyboard, the dialog, and
+ * teardown. The full flows of both tabs are the e2e suites' job. Opt in with
  * `E2E_SWING=1`: it needs a JDK and both jars, and it opens a window.
  */
 
 import path from 'node:path';
 import { EngineError, type EngineAttemptContext, type EngineInitInfo, type LocatorExpression, type OperationContext, type SemanticNode } from 'e2e/engine';
-import { afterAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { swing } from '../../src/index.ts';
 
 const ROOT = path.join(import.meta.dirname, '../..');
@@ -22,6 +23,21 @@ const role = (value: string, name: string): LocatorExpression => ({
 
 describe.runIf(process.env['E2E_SWING'] === '1')('swing() on the real test app', () => {
   const engine = swing();
+  const attempt = { attemptId: 'a1', signal: new AbortController().signal } as unknown as EngineAttemptContext;
+
+  beforeAll(async () => {
+    await engine.init!({
+      runId: 'run',
+      targetName: 'desktop',
+      projectRoot: ROOT,
+      app: { appPath: 'swing-for-test/target/swing-for-test-0.1.0.jar' },
+      env: process.env,
+      headed: true,
+      workerSlot: 0,
+      signal: new AbortController().signal,
+      log: () => undefined,
+    } as EngineInitInfo);
+  });
 
   afterAll(async () => {
     await engine.dispose?.(cleanup);
@@ -44,18 +60,6 @@ describe.runIf(process.env['E2E_SWING'] === '1')('swing() on the real test app',
   }
 
   it('signs in from fill to the dialog, and starts the next attempt fresh', async () => {
-    await engine.init!({
-      runId: 'run',
-      targetName: 'desktop',
-      projectRoot: ROOT,
-      app: { appPath: 'swing-for-test/target/swing-for-test-0.1.0.jar' },
-      env: process.env,
-      headed: true,
-      workerSlot: 0,
-      signal: new AbortController().signal,
-      log: () => undefined,
-    } as EngineInitInfo);
-    const attempt = { attemptId: 'a1', signal: new AbortController().signal } as unknown as EngineAttemptContext;
     await engine.startAttempt!(attempt);
 
     const snapshot = await engine.observe!(op());
@@ -84,6 +88,39 @@ describe.runIf(process.env['E2E_SWING'] === '1')('swing() on the real test app',
     await engine.endAttempt!(cleanup);
     await engine.startAttempt!(attempt);
     expect((await one(testId('status'))).text).not.toMatch(/Signed in/);
+    await engine.endAttempt!(cleanup);
+  });
+
+  it('signs in with the keyboard, select, and check, closes the dialog with Escape, and adds a todo with Enter', async () => {
+    await engine.startAttempt!(attempt);
+
+    await engine.perform!((await one(testId('username'))).ref, { kind: 'focus' }, op());
+    await engine.keyboard!.type('demo', { replace: true }, op());
+    await engine.perform!((await one(testId('password'))).ref, { kind: 'focus' }, op());
+    await engine.keyboard!.type(PASSWORD, { replace: true }, op());
+    await engine.perform!((await one(testId('role'))).ref, { kind: 'selectOption', value: 'Admin' }, op());
+    expect((await one(testId('role'))).value).toBe('Admin');
+    await engine.perform!((await one(testId('remember'))).ref, { kind: 'check' }, op());
+    expect((await one(testId('remember'))).states?.checked).toBe(true);
+    await engine.perform!((await one(testId('sign-in'))).ref, { kind: 'press', key: 'Space' }, op());
+
+    await eventually(role('button', 'OK'), 1);
+    expect((await engine.observe!(op())).location).toBe('Signed in');
+    expect((await one(testId('status'))).text).toBe('Signed in as demo (Admin), remembered');
+
+    await engine.keyboard!.press('Escape', op());
+    await eventually(role('button', 'OK'), 0);
+    expect((await engine.observe!(op())).location).toBe('Swing for Test');
+
+    await engine.perform!((await one(role('tab', 'Todos'))).ref, { kind: 'tap' }, op());
+    await engine.perform!((await one(testId('todo-input'))).ref, { kind: 'focus' }, op());
+    await engine.keyboard!.type('Buy milk', { replace: false }, op());
+    await engine.keyboard!.press('Enter', op());
+    await eventually(role('option', 'Buy milk'), 1);
+
+    // The viewport swipe scrolls the front window's largest scroll area: here, the Todos list.
+    const { root } = await engine.observe!(op());
+    await engine.perform!(root.ref, { kind: 'swipe', direction: 'down' }, op());
     await engine.endAttempt!(cleanup);
   });
 });
