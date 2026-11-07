@@ -32,7 +32,7 @@ e2e runner ── swing() engine (TypeScript)
 ## Try it with the bundled sample app
 
 ```sh
-git clone <this repository>
+git clone https://github.com/77web/e2e-engine-swing.git
 cd e2e-engine-swing
 npm install
 npm run build:agent      # builds agent/target/e2e-swing-agent.jar
