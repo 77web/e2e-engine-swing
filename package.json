@@ -3,6 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "description": "Java Swing engine for e2e agentic end-to-end testing",
+  "license": "Apache-2.0",
+  "author": "Hiromi Hishida <hishida77web@gmail.com>",
   "type": "module",
   "exports": {
     ".": {
@@ -11,7 +13,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc --project tsconfig.build.json",
