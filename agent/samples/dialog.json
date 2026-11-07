@@ -269,6 +269,7 @@
                                     "showing",
                                     "collapsed"
                                   ],
+                                  "text": "Viewer",
                                   "children": [
                                     {
                                       "id": "n15",
@@ -325,7 +326,7 @@
                                                   ],
                                                   "children": [
                                                     {
-                                                      "id": "n45",
+                                                      "id": "n20",
                                                       "role": "label",
                                                       "name": "Viewer",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -340,7 +341,7 @@
                                                       "children": []
                                                     },
                                                     {
-                                                      "id": "n46",
+                                                      "id": "n21",
                                                       "role": "label",
                                                       "name": "Editor",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -354,7 +355,7 @@
                                                       "children": []
                                                     },
                                                     {
-                                                      "id": "n47",
+                                                      "id": "n22",
                                                       "role": "label",
                                                       "name": "Admin",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -675,7 +676,7 @@
       ]
     },
     {
-      "id": "n48",
+      "id": "n42",
       "role": "dialog",
       "name": "Signed in",
       "testId": "dialog0",
@@ -695,7 +696,7 @@
       ],
       "children": [
         {
-          "id": "n49",
+          "id": "n43",
           "role": "root pane",
           "className": "javax.swing.JRootPane",
           "rect": {
@@ -713,7 +714,7 @@
           ],
           "children": [
             {
-              "id": "n50",
+              "id": "n44",
               "role": "panel",
               "testId": "null.glassPane",
               "className": "javax.swing.JPanel",
@@ -724,7 +725,7 @@
               "children": []
             },
             {
-              "id": "n51",
+              "id": "n45",
               "role": "layered pane",
               "testId": "null.layeredPane",
               "className": "javax.swing.JLayeredPane",
@@ -742,7 +743,7 @@
               ],
               "children": [
                 {
-                  "id": "n52",
+                  "id": "n46",
                   "role": "panel",
                   "testId": "null.contentPane",
                   "className": "javax.swing.JPanel",
@@ -761,7 +762,7 @@
                   ],
                   "children": [
                     {
-                      "id": "n53",
+                      "id": "n47",
                       "role": "alert",
                       "className": "javax.swing.JOptionPane",
                       "rect": {
@@ -779,7 +780,7 @@
                       ],
                       "children": [
                         {
-                          "id": "n54",
+                          "id": "n48",
                           "role": "panel",
                           "className": "javax.swing.JPanel",
                           "rect": {
@@ -797,7 +798,7 @@
                           ],
                           "children": [
                             {
-                              "id": "n55",
+                              "id": "n49",
                               "role": "panel",
                               "className": "javax.swing.JPanel",
                               "rect": {
@@ -815,7 +816,7 @@
                               ],
                               "children": [
                                 {
-                                  "id": "n56",
+                                  "id": "n50",
                                   "role": "icon",
                                   "className": "javax.swing.JLabel",
                                   "rect": {
@@ -835,7 +836,7 @@
                               ]
                             },
                             {
-                              "id": "n57",
+                              "id": "n51",
                               "role": "filler",
                               "className": "javax.swing.Box$Filler",
                               "rect": {
@@ -852,7 +853,7 @@
                               "children": []
                             },
                             {
-                              "id": "n58",
+                              "id": "n52",
                               "role": "panel",
                               "className": "javax.swing.JPanel",
                               "rect": {
@@ -870,7 +871,7 @@
                               ],
                               "children": [
                                 {
-                                  "id": "n59",
+                                  "id": "n53",
                                   "role": "label",
                                   "name": "Welcome, demo!",
                                   "testId": "OptionPane.label",
@@ -895,7 +896,7 @@
                           ]
                         },
                         {
-                          "id": "n60",
+                          "id": "n54",
                           "role": "panel",
                           "testId": "OptionPane.buttonArea",
                           "className": "javax.swing.JPanel",
@@ -914,7 +915,7 @@
                           ],
                           "children": [
                             {
-                              "id": "n61",
+                              "id": "n55",
                               "role": "push button",
                               "name": "OK",
                               "testId": "OptionPane.button",

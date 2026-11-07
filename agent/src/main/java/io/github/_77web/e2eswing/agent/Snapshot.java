@@ -17,9 +17,7 @@ import javax.accessibility.AccessibleContext;
 import javax.accessibility.AccessibleRole;
 import javax.accessibility.AccessibleState;
 import javax.accessibility.AccessibleValue;
-import javax.swing.JLabel;
-import javax.swing.JPasswordField;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -110,6 +108,9 @@ final class Snapshot {
     /**
      * Reads the text from the component. {@code AccessibleText} has no whole-text getter, and the
      * accessible name can differ: the status label is named "Status" whatever it displays.
+     * A combo box's text is its selected item's {@code toString}, the form
+     * {@code selectOption} matches a label against; an editable one's uncommitted
+     * editor text is not read.
      */
     private static String readText(Accessible accessible) {
         if (accessible instanceof JTextComponent textComponent) {
@@ -117,6 +118,10 @@ final class Snapshot {
         }
         if (accessible instanceof JLabel label) {
             return label.getText();
+        }
+        if (accessible instanceof JComboBox<?> comboBox) {
+            var selected = comboBox.getSelectedItem();
+            return selected != null ? selected.toString() : null;
         }
         return null;
     }

@@ -68,7 +68,7 @@ function project(raw: RawNode, revision: string, origin: {x: number, y: number})
 
   let text = raw.secure ? undefined : raw.text;
   let value = undefined;
-  if (role === "textbox") {
+  if (role === "textbox" || role === "combobox") {
     value = text;
     text = undefined;
   }

@@ -218,6 +218,7 @@
                                     "visible",
                                     "collapsed"
                                   ],
+                                  "text": "Viewer",
                                   "children": [
                                     {
                                       "id": "n15",
@@ -274,7 +275,7 @@
                                                   ],
                                                   "children": [
                                                     {
-                                                      "id": "n42",
+                                                      "id": "n20",
                                                       "role": "label",
                                                       "name": "Viewer",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -289,7 +290,7 @@
                                                       "children": []
                                                     },
                                                     {
-                                                      "id": "n43",
+                                                      "id": "n21",
                                                       "role": "label",
                                                       "name": "Editor",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -303,7 +304,7 @@
                                                       "children": []
                                                     },
                                                     {
-                                                      "id": "n44",
+                                                      "id": "n22",
                                                       "role": "label",
                                                       "name": "Admin",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",

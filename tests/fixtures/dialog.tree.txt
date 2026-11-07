@@ -7,7 +7,7 @@ screen
         label "Password"
         textbox "Password" [secure] purpose=password #password
         label "Role"
-        combobox "Role" [expanded=false] #role
+        combobox "Role" value="Viewer" [expanded=false] #role
         checkbox "Remember me" [checked=false] #remember
         button "Sign in" #sign-in
         label "Status" text="Signed in as demo (Viewer)" #status

@@ -2,9 +2,6 @@
  * Stage 2, work 2: the actions other than keys. Starts the real test app under
  * the real agent and drives both tabs with them. Opt in with `E2E_SWING=1`: it
  * needs a JDK and both jars, and it opens a window.
- *
- * The combo box's selected value is not in the snapshot yet (work 4), so a
- * selection is checked through the status line that signing in writes.
  */
 
 import path from 'node:path';
@@ -128,7 +125,13 @@ describe.runIf(process.env['E2E_SWING'] === '1')('agent actions other than keys'
 
   it('selects a combo box option by label and by index', async () => {
     const found = await nodes();
+
+    await perform(byTestId(found, 'role'), 'selectOption', { option: { label: 'Editor' } });
+    expect(byTestId(await nodes(), 'role').text).toBe('Editor');
+
     await perform(byTestId(found, 'role'), 'selectOption', { option: { label: 'Admin' } });
+    expect(byTestId(await nodes(), 'role').text).toBe('Admin');
+
     await perform(byTestId(found, 'remember'), 'check');
     expect(await signIn()).toBe('Signed in as demo (Admin), remembered');
 
