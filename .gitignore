@@ -1,0 +1,10 @@
+target/
+node_modules/
+dist/
+.idea/
+.DS_Store
+# for local dev
+handoffs/
+/swing-plan.md
+/.mcp.json
+/.tool-versions

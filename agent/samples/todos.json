@@ -1,0 +1,643 @@
+{
+  "windows": [
+    {
+      "role": "frame",
+      "name": "Swing for Test",
+      "testId": "main-window",
+      "className": "javax.swing.JFrame",
+      "rect": {
+        "x": 495,
+        "y": 269,
+        "width": 480,
+        "height": 360
+      },
+      "states": [
+        "enabled",
+        "focusable",
+        "visible",
+        "showing",
+        "resizable"
+      ],
+      "children": [
+        {
+          "role": "root pane",
+          "className": "javax.swing.JRootPane",
+          "rect": {
+            "x": 495,
+            "y": 297,
+            "width": 480,
+            "height": 332
+          },
+          "states": [
+            "enabled",
+            "focusable",
+            "visible",
+            "showing",
+            "opaque"
+          ],
+          "children": [
+            {
+              "role": "panel",
+              "testId": "null.glassPane",
+              "className": "javax.swing.JPanel",
+              "states": [
+                "enabled",
+                "focusable"
+              ],
+              "children": []
+            },
+            {
+              "role": "layered pane",
+              "testId": "null.layeredPane",
+              "className": "javax.swing.JLayeredPane",
+              "rect": {
+                "x": 495,
+                "y": 297,
+                "width": 480,
+                "height": 332
+              },
+              "states": [
+                "enabled",
+                "focusable",
+                "visible",
+                "showing"
+              ],
+              "children": [
+                {
+                  "role": "panel",
+                  "testId": "null.contentPane",
+                  "className": "javax.swing.JPanel",
+                  "rect": {
+                    "x": 495,
+                    "y": 297,
+                    "width": 480,
+                    "height": 332
+                  },
+                  "states": [
+                    "enabled",
+                    "focusable",
+                    "visible",
+                    "showing",
+                    "opaque"
+                  ],
+                  "children": [
+                    {
+                      "role": "page tab list",
+                      "name": "Todos",
+                      "testId": "tabs",
+                      "className": "javax.swing.JTabbedPane",
+                      "rect": {
+                        "x": 495,
+                        "y": 297,
+                        "width": 480,
+                        "height": 332
+                      },
+                      "states": [
+                        "enabled",
+                        "focusable",
+                        "visible",
+                        "showing"
+                      ],
+                      "children": [
+                        {
+                          "role": "page tab",
+                          "name": "Sign in",
+                          "className": "javax.swing.JTabbedPane$Page",
+                          "rect": {
+                            "x": 671,
+                            "y": 300,
+                            "width": 66,
+                            "height": 23
+                          },
+                          "states": [
+                            "enabled",
+                            "focusable",
+                            "visible",
+                            "showing",
+                            "selectable"
+                          ],
+                          "value": 0,
+                          "children": [
+                            {
+                              "role": "panel",
+                              "className": "javax.swing.JPanel",
+                              "states": [
+                                "enabled",
+                                "focusable",
+                                "opaque"
+                              ],
+                              "children": [
+                                {
+                                  "role": "label",
+                                  "name": "Username",
+                                  "className": "javax.swing.JLabel",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible"
+                                  ],
+                                  "text": "Username",
+                                  "children": []
+                                },
+                                {
+                                  "role": "text",
+                                  "name": "Username",
+                                  "testId": "username",
+                                  "className": "javax.swing.JTextField",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible",
+                                    "editable",
+                                    "single line"
+                                  ],
+                                  "text": "",
+                                  "children": []
+                                },
+                                {
+                                  "role": "label",
+                                  "name": "Password",
+                                  "className": "javax.swing.JLabel",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible"
+                                  ],
+                                  "text": "Password",
+                                  "children": []
+                                },
+                                {
+                                  "role": "password text",
+                                  "name": "Password",
+                                  "testId": "password",
+                                  "className": "javax.swing.JPasswordField",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible",
+                                    "editable",
+                                    "single line"
+                                  ],
+                                  "secure": true,
+                                  "children": []
+                                },
+                                {
+                                  "role": "label",
+                                  "name": "Role",
+                                  "className": "javax.swing.JLabel",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible"
+                                  ],
+                                  "text": "Role",
+                                  "children": []
+                                },
+                                {
+                                  "role": "combo box",
+                                  "name": "Role",
+                                  "testId": "role",
+                                  "className": "javax.swing.JComboBox",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible",
+                                    "collapsed"
+                                  ],
+                                  "children": [
+                                    {
+                                      "role": "popup menu",
+                                      "testId": "ComboPopup.popup",
+                                      "className": "com.apple.laf.AquaComboBoxPopup",
+                                      "states": [
+                                        "enabled",
+                                        "selectable",
+                                        "selected"
+                                      ],
+                                      "children": [
+                                        {
+                                          "role": "filler",
+                                          "className": "javax.swing.Box$Filler",
+                                          "states": [
+                                            "enabled",
+                                            "visible"
+                                          ],
+                                          "children": []
+                                        },
+                                        {
+                                          "role": "scroll pane",
+                                          "testId": "ComboBox.scrollPane",
+                                          "className": "javax.swing.JScrollPane",
+                                          "states": [
+                                            "enabled",
+                                            "visible",
+                                            "opaque"
+                                          ],
+                                          "children": [
+                                            {
+                                              "role": "viewport",
+                                              "className": "javax.swing.JViewport",
+                                              "states": [
+                                                "enabled",
+                                                "focusable",
+                                                "visible",
+                                                "opaque"
+                                              ],
+                                              "children": [
+                                                {
+                                                  "role": "list",
+                                                  "testId": "ComboBox.list",
+                                                  "className": "com.apple.laf.AquaComboBoxPopup$1",
+                                                  "states": [
+                                                    "enabled",
+                                                    "visible",
+                                                    "opaque"
+                                                  ],
+                                                  "children": [
+                                                    {
+                                                      "role": "label",
+                                                      "name": "Viewer",
+                                                      "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
+                                                      "states": [
+                                                        "enabled",
+                                                        "focusable",
+                                                        "visible",
+                                                        "selectable",
+                                                        "selected",
+                                                        "transient"
+                                                      ],
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "role": "label",
+                                                      "name": "Editor",
+                                                      "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
+                                                      "states": [
+                                                        "enabled",
+                                                        "focusable",
+                                                        "visible",
+                                                        "selectable",
+                                                        "transient"
+                                                      ],
+                                                      "children": []
+                                                    },
+                                                    {
+                                                      "role": "label",
+                                                      "name": "Admin",
+                                                      "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
+                                                      "states": [
+                                                        "enabled",
+                                                        "focusable",
+                                                        "visible",
+                                                        "selectable",
+                                                        "transient"
+                                                      ],
+                                                      "children": []
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "role": "scroll bar",
+                                              "className": "javax.swing.JScrollPane$ScrollBar",
+                                              "states": [
+                                                "enabled",
+                                                "visible",
+                                                "vertical"
+                                              ],
+                                              "value": 0,
+                                              "children": []
+                                            }
+                                          ]
+                                        },
+                                        {
+                                          "role": "filler",
+                                          "className": "javax.swing.Box$Filler",
+                                          "states": [
+                                            "enabled",
+                                            "visible"
+                                          ],
+                                          "children": []
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "role": "check box",
+                                  "name": "Remember me",
+                                  "testId": "remember",
+                                  "className": "javax.swing.JCheckBox",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible"
+                                  ],
+                                  "value": 0,
+                                  "children": []
+                                },
+                                {
+                                  "role": "push button",
+                                  "name": "Sign in",
+                                  "testId": "sign-in",
+                                  "className": "javax.swing.JButton",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible"
+                                  ],
+                                  "value": 0,
+                                  "children": []
+                                },
+                                {
+                                  "role": "label",
+                                  "name": "Status",
+                                  "testId": "status",
+                                  "className": "javax.swing.JLabel",
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible"
+                                  ],
+                                  "text": " ",
+                                  "children": []
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "role": "page tab",
+                          "name": "Todos",
+                          "className": "javax.swing.JTabbedPane$Page",
+                          "rect": {
+                            "x": 737,
+                            "y": 300,
+                            "width": 62,
+                            "height": 23
+                          },
+                          "states": [
+                            "enabled",
+                            "focusable",
+                            "visible",
+                            "showing",
+                            "selectable",
+                            "selected"
+                          ],
+                          "value": 1,
+                          "children": [
+                            {
+                              "role": "panel",
+                              "className": "javax.swing.JPanel",
+                              "rect": {
+                                "x": 506,
+                                "y": 330,
+                                "width": 459,
+                                "height": 286
+                              },
+                              "states": [
+                                "enabled",
+                                "focusable",
+                                "visible",
+                                "showing",
+                                "opaque"
+                              ],
+                              "children": [
+                                {
+                                  "role": "panel",
+                                  "className": "javax.swing.JPanel",
+                                  "rect": {
+                                    "x": 514,
+                                    "y": 338,
+                                    "width": 443,
+                                    "height": 39
+                                  },
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible",
+                                    "showing",
+                                    "opaque"
+                                  ],
+                                  "children": [
+                                    {
+                                      "role": "text",
+                                      "name": "New todo",
+                                      "testId": "todo-input",
+                                      "className": "javax.swing.JTextField",
+                                      "rect": {
+                                        "x": 519,
+                                        "y": 344,
+                                        "width": 250,
+                                        "height": 26
+                                      },
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "visible",
+                                        "showing",
+                                        "editable",
+                                        "single line"
+                                      ],
+                                      "text": "",
+                                      "children": []
+                                    },
+                                    {
+                                      "role": "push button",
+                                      "name": "Add",
+                                      "testId": "todo-add",
+                                      "className": "javax.swing.JButton",
+                                      "rect": {
+                                        "x": 774,
+                                        "y": 343,
+                                        "width": 75,
+                                        "height": 29
+                                      },
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "visible",
+                                        "showing"
+                                      ],
+                                      "value": 0,
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "role": "scroll pane",
+                                  "className": "javax.swing.JScrollPane",
+                                  "rect": {
+                                    "x": 514,
+                                    "y": 377,
+                                    "width": 443,
+                                    "height": 192
+                                  },
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible",
+                                    "showing",
+                                    "opaque"
+                                  ],
+                                  "children": [
+                                    {
+                                      "role": "viewport",
+                                      "className": "javax.swing.JViewport",
+                                      "rect": {
+                                        "x": 516,
+                                        "y": 379,
+                                        "width": 439,
+                                        "height": 188
+                                      },
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "visible",
+                                        "showing",
+                                        "opaque"
+                                      ],
+                                      "children": [
+                                        {
+                                          "role": "list",
+                                          "name": "Todos",
+                                          "testId": "todo-list",
+                                          "className": "javax.swing.JList",
+                                          "rect": {
+                                            "x": 516,
+                                            "y": 379,
+                                            "width": 439,
+                                            "height": 188
+                                          },
+                                          "states": [
+                                            "enabled",
+                                            "focusable",
+                                            "visible",
+                                            "showing",
+                                            "opaque",
+                                            "multiselectable"
+                                          ],
+                                          "children": []
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "role": "scroll bar",
+                                      "className": "javax.swing.JScrollPane$ScrollBar",
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "vertical"
+                                      ],
+                                      "value": 0,
+                                      "children": []
+                                    },
+                                    {
+                                      "role": "scroll bar",
+                                      "className": "javax.swing.JScrollPane$ScrollBar",
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "horizontal"
+                                      ],
+                                      "value": 0,
+                                      "children": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "role": "panel",
+                                  "className": "javax.swing.JPanel",
+                                  "rect": {
+                                    "x": 514,
+                                    "y": 569,
+                                    "width": 443,
+                                    "height": 39
+                                  },
+                                  "states": [
+                                    "enabled",
+                                    "focusable",
+                                    "visible",
+                                    "showing",
+                                    "opaque"
+                                  ],
+                                  "children": [
+                                    {
+                                      "role": "push button",
+                                      "name": "Remove selected",
+                                      "testId": "todo-remove",
+                                      "className": "javax.swing.JButton",
+                                      "rect": {
+                                        "x": 519,
+                                        "y": 574,
+                                        "width": 149,
+                                        "height": 29
+                                      },
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "visible",
+                                        "showing"
+                                      ],
+                                      "value": 0,
+                                      "children": []
+                                    },
+                                    {
+                                      "role": "push button",
+                                      "name": "Clear all",
+                                      "testId": "todo-clear",
+                                      "className": "javax.swing.JButton",
+                                      "rect": {
+                                        "x": 673,
+                                        "y": 574,
+                                        "width": 95,
+                                        "height": 29
+                                      },
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "visible",
+                                        "showing"
+                                      ],
+                                      "value": 0,
+                                      "children": []
+                                    },
+                                    {
+                                      "role": "label",
+                                      "name": "Item count",
+                                      "testId": "todo-count",
+                                      "className": "javax.swing.JLabel",
+                                      "rect": {
+                                        "x": 773,
+                                        "y": 580,
+                                        "width": 47,
+                                        "height": 16
+                                      },
+                                      "states": [
+                                        "enabled",
+                                        "focusable",
+                                        "visible",
+                                        "showing"
+                                      ],
+                                      "text": "0 items",
+                                      "children": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
