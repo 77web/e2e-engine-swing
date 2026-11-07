@@ -22,7 +22,6 @@ const roleMap: Record<string, string> = {
   "page tab": "tab",
   "frame": "window",
   "list": "listbox",
-  "list item": "option",
 };
 
 export function projectWindows(windows: readonly RawNode[], revision: string): EngineSnapshot {
@@ -63,11 +62,12 @@ const COLLAPSIBLE_ROLES = new Set(['panel', 'layered pane', 'root pane', 'viewpo
 function project(raw: RawNode, revision: string, origin: {x: number, y: number}, isChildOfList: boolean): SemanticNode[] {
   // Like the web engine, keep list items scrolled out of view; tap scrolls them in first.
   if (!raw.states.includes('showing') && !isChildOfList) return [];
-  const role =  raw.role ? (roleMap[raw.role] ?? raw.role) : undefined;
+  // A JList item borrows the role of its cell renderer (`label` by default), so its place, not its role, makes it an option.
+  const role = isChildOfList ? 'option' : raw.role ? (roleMap[raw.role] ?? raw.role) : undefined;
   const name = trimText(raw.name || undefined, OBSERVED_NAME_LIMIT);
   const testId = usableTestId(raw.testId);
   const children = raw.children.flatMap((c) => project(c, revision, origin, raw.role === 'list'));
-  if (name === undefined && testId === undefined && COLLAPSIBLE_ROLES.has(raw.role ?? "")) return children;
+  if (!isChildOfList && name === undefined && testId === undefined && COLLAPSIBLE_ROLES.has(raw.role ?? "")) return children;
 
   let text = raw.secure ? undefined : raw.text;
   let value = undefined;

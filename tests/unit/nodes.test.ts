@@ -47,11 +47,12 @@ describe('projectWindows', () => {
   });
 
   it('maps a list to a listbox and its items to options', () => {
+    // A JList item reports its cell renderer's role, `label` by default, as the real agent shows.
     const actual = projectWindows([node({
       role: 'list',
       children: [
-        node({ role: 'list item' }),
-        node({ role: 'list item', states: ['showing', 'enabled', 'selected'] }),
+        node({ role: 'label' }),
+        node({ role: 'label', states: ['showing', 'enabled', 'selected'] }),
       ] })], 'test');
     expect(actual.root.children?.[0]?.role).toBe('listbox');
     expect(actual.root.children?.[0]?.children?.[0]?.role).toBe('option');
@@ -59,13 +60,22 @@ describe('projectWindows', () => {
     expect(actual.root.children?.[0]?.children?.[1]?.states?.selected).toBe(true);
   });
 
+  it('makes an item an option and keeps it whatever role its renderer gives', () => {
+    const actual = projectWindows([node({
+      role: 'list',
+      children: [node({ role: 'panel' }), node({ role: 'push button', name: 'Row' })],
+    })], 'test');
+    // Without the exception, the nameless panel would collapse away.
+    expect(actual.root.children?.[0]?.children?.map((item) => [item.role, item.name])).toEqual([['option', undefined], ['option', 'Row']]);
+  });
+
   it('keeps the items of a showing list that are scrolled out of view', () => {
     const actual = projectWindows([node({
       role: 'list',
       children: [
-        node({ role: 'list item' }),
-        node({ role: 'list item', states: ['showing', 'enabled', 'selected'] }),
-        node({ role: 'list item', name: 'scrolled out', states: ['enabled'] }), // showing = false
+        node({ role: 'label' }),
+        node({ role: 'label', states: ['showing', 'enabled', 'selected'] }),
+        node({ role: 'label', name: 'scrolled out', states: ['enabled'] }), // showing = false
       ] })], 'test');
     const items = actual.root.children?.[0]?.children;
     expect(items).toHaveLength(3);
@@ -91,7 +101,7 @@ describe('projectWindows', () => {
     const actual = projectWindows([node({
       role: 'list',
       children: [node({
-        role: 'list item',
+        role: 'label',
         states: ['enabled'],
         children: [
           node({ name: 'grandchild', states: ['enabled'] }), // showing = false
