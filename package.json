@@ -1,0 +1,42 @@
+{
+  "name": "e2e-engine-swing",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Java Swing engine for e2e agentic end-to-end testing",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\" && tsc --project tsconfig.build.json",
+    "build:agent": "mvn -f agent package",
+    "build:test-app": "mvn -f swing-for-test package",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run --project unit",
+    "test:integration": "E2E_SWING=1 vitest run --project integration",
+    "check": "npm run lint && npm run typecheck && npm run test:unit"
+  },
+  "peerDependencies": {
+    "e2e": ">=0.23.0 <1"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "e2e": "0.23.0",
+    "oxlint": "1.92.0",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  },
+  "engines": {
+    "node": "^22.22.3 || >=24.8.0"
+  }
+}

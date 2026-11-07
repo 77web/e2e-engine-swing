@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error",
+    "pedantic": "off",
+    "style": "off"
+  },
+  "env": {
+    "es2023": true,
+    "node": true
+  },
+  "ignorePatterns": ["dist/**", "**/target/**"],
+  "rules": {
+    // Sequential execution is the contract of a test runner, not a perf bug.
+    "eslint/no-await-in-loop": "off",
+    // Conflicts with the conditional-spread idiom exactOptionalPropertyTypes forces.
+    "oxc/no-map-spread": "off"
+  }
+}
