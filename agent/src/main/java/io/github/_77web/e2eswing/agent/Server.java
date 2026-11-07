@@ -1,4 +1,4 @@
-package dev.e2e.swing.agent;
+package io.github._77web.e2eswing.agent;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;

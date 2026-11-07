@@ -9,7 +9,7 @@
     app's accessibility tree over localhost. No dependencies, so the jar can be
     put on any app's JVM without clashing with the app's own classpath.
   -->
-  <groupId>dev.e2e</groupId>
+  <groupId>io.github.77web</groupId>
   <artifactId>e2e-swing-agent</artifactId>
   <version>0.0.0</version>
   <packaging>jar</packaging>
@@ -40,7 +40,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Premain-Class>dev.e2e.swing.agent.Agent</Premain-Class>
+              <Premain-Class>io.github._77web.e2eswing.agent.Agent</Premain-Class>
             </manifestEntries>
           </archive>
         </configuration>
