@@ -1,6 +1,7 @@
 {
   "windows": [
     {
+      "id": "n1",
       "role": "frame",
       "name": "Swing for Test",
       "testId": "main-window",
@@ -20,6 +21,7 @@
       ],
       "children": [
         {
+          "id": "n2",
           "role": "root pane",
           "className": "javax.swing.JRootPane",
           "rect": {
@@ -37,6 +39,7 @@
           ],
           "children": [
             {
+              "id": "n3",
               "role": "panel",
               "testId": "null.glassPane",
               "className": "javax.swing.JPanel",
@@ -47,6 +50,7 @@
               "children": []
             },
             {
+              "id": "n4",
               "role": "layered pane",
               "testId": "null.layeredPane",
               "className": "javax.swing.JLayeredPane",
@@ -64,6 +68,7 @@
               ],
               "children": [
                 {
+                  "id": "n5",
                   "role": "panel",
                   "testId": "null.contentPane",
                   "className": "javax.swing.JPanel",
@@ -82,6 +87,7 @@
                   ],
                   "children": [
                     {
+                      "id": "n6",
                       "role": "page tab list",
                       "name": "Sign in",
                       "testId": "tabs",
@@ -100,6 +106,7 @@
                       ],
                       "children": [
                         {
+                          "id": "n7",
                           "role": "page tab",
                           "name": "Sign in",
                           "className": "javax.swing.JTabbedPane$Page",
@@ -120,6 +127,7 @@
                           "value": 1,
                           "children": [
                             {
+                              "id": "n8",
                               "role": "panel",
                               "className": "javax.swing.JPanel",
                               "rect": {
@@ -137,6 +145,7 @@
                               ],
                               "children": [
                                 {
+                                  "id": "n9",
                                   "role": "label",
                                   "name": "Username",
                                   "className": "javax.swing.JLabel",
@@ -156,6 +165,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n10",
                                   "role": "text",
                                   "name": "Username",
                                   "testId": "username",
@@ -178,6 +188,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n11",
                                   "role": "label",
                                   "name": "Password",
                                   "className": "javax.swing.JLabel",
@@ -197,6 +208,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n12",
                                   "role": "password text",
                                   "name": "Password",
                                   "testId": "password",
@@ -219,6 +231,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n13",
                                   "role": "label",
                                   "name": "Role",
                                   "className": "javax.swing.JLabel",
@@ -238,6 +251,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n14",
                                   "role": "combo box",
                                   "name": "Role",
                                   "testId": "role",
@@ -257,6 +271,7 @@
                                   ],
                                   "children": [
                                     {
+                                      "id": "n15",
                                       "role": "popup menu",
                                       "testId": "ComboPopup.popup",
                                       "className": "com.apple.laf.AquaComboBoxPopup",
@@ -267,6 +282,7 @@
                                       ],
                                       "children": [
                                         {
+                                          "id": "n16",
                                           "role": "filler",
                                           "className": "javax.swing.Box$Filler",
                                           "states": [
@@ -276,6 +292,7 @@
                                           "children": []
                                         },
                                         {
+                                          "id": "n17",
                                           "role": "scroll pane",
                                           "testId": "ComboBox.scrollPane",
                                           "className": "javax.swing.JScrollPane",
@@ -286,6 +303,7 @@
                                           ],
                                           "children": [
                                             {
+                                              "id": "n18",
                                               "role": "viewport",
                                               "className": "javax.swing.JViewport",
                                               "states": [
@@ -296,6 +314,7 @@
                                               ],
                                               "children": [
                                                 {
+                                                  "id": "n19",
                                                   "role": "list",
                                                   "testId": "ComboBox.list",
                                                   "className": "com.apple.laf.AquaComboBoxPopup$1",
@@ -306,6 +325,7 @@
                                                   ],
                                                   "children": [
                                                     {
+                                                      "id": "n20",
                                                       "role": "label",
                                                       "name": "Viewer",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -320,6 +340,7 @@
                                                       "children": []
                                                     },
                                                     {
+                                                      "id": "n21",
                                                       "role": "label",
                                                       "name": "Editor",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -333,6 +354,7 @@
                                                       "children": []
                                                     },
                                                     {
+                                                      "id": "n22",
                                                       "role": "label",
                                                       "name": "Admin",
                                                       "className": "javax.swing.JList$AccessibleJList$AccessibleJListChild",
@@ -350,6 +372,7 @@
                                               ]
                                             },
                                             {
+                                              "id": "n23",
                                               "role": "scroll bar",
                                               "className": "javax.swing.JScrollPane$ScrollBar",
                                               "states": [
@@ -363,6 +386,7 @@
                                           ]
                                         },
                                         {
+                                          "id": "n24",
                                           "role": "filler",
                                           "className": "javax.swing.Box$Filler",
                                           "states": [
@@ -376,6 +400,7 @@
                                   ]
                                 },
                                 {
+                                  "id": "n25",
                                   "role": "check box",
                                   "name": "Remember me",
                                   "testId": "remember",
@@ -396,6 +421,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n26",
                                   "role": "push button",
                                   "name": "Sign in",
                                   "testId": "sign-in",
@@ -416,6 +442,7 @@
                                   "children": []
                                 },
                                 {
+                                  "id": "n27",
                                   "role": "label",
                                   "name": "Status",
                                   "testId": "status",
@@ -440,6 +467,7 @@
                           ]
                         },
                         {
+                          "id": "n28",
                           "role": "page tab",
                           "name": "Todos",
                           "className": "javax.swing.JTabbedPane$Page",
@@ -459,6 +487,7 @@
                           "value": 0,
                           "children": [
                             {
+                              "id": "n29",
                               "role": "panel",
                               "className": "javax.swing.JPanel",
                               "states": [
@@ -468,6 +497,7 @@
                               ],
                               "children": [
                                 {
+                                  "id": "n30",
                                   "role": "panel",
                                   "className": "javax.swing.JPanel",
                                   "states": [
@@ -478,6 +508,7 @@
                                   ],
                                   "children": [
                                     {
+                                      "id": "n31",
                                       "role": "text",
                                       "name": "New todo",
                                       "testId": "todo-input",
@@ -493,6 +524,7 @@
                                       "children": []
                                     },
                                     {
+                                      "id": "n32",
                                       "role": "push button",
                                       "name": "Add",
                                       "testId": "todo-add",
@@ -508,6 +540,7 @@
                                   ]
                                 },
                                 {
+                                  "id": "n33",
                                   "role": "scroll pane",
                                   "className": "javax.swing.JScrollPane",
                                   "states": [
@@ -518,6 +551,7 @@
                                   ],
                                   "children": [
                                     {
+                                      "id": "n34",
                                       "role": "viewport",
                                       "className": "javax.swing.JViewport",
                                       "states": [
@@ -528,6 +562,7 @@
                                       ],
                                       "children": [
                                         {
+                                          "id": "n35",
                                           "role": "list",
                                           "name": "Todos",
                                           "testId": "todo-list",
@@ -544,6 +579,7 @@
                                       ]
                                     },
                                     {
+                                      "id": "n36",
                                       "role": "scroll bar",
                                       "className": "javax.swing.JScrollPane$ScrollBar",
                                       "states": [
@@ -555,6 +591,7 @@
                                       "children": []
                                     },
                                     {
+                                      "id": "n37",
                                       "role": "scroll bar",
                                       "className": "javax.swing.JScrollPane$ScrollBar",
                                       "states": [
@@ -568,6 +605,7 @@
                                   ]
                                 },
                                 {
+                                  "id": "n38",
                                   "role": "panel",
                                   "className": "javax.swing.JPanel",
                                   "states": [
@@ -578,6 +616,7 @@
                                   ],
                                   "children": [
                                     {
+                                      "id": "n39",
                                       "role": "push button",
                                       "name": "Remove selected",
                                       "testId": "todo-remove",
@@ -591,6 +630,7 @@
                                       "children": []
                                     },
                                     {
+                                      "id": "n40",
                                       "role": "push button",
                                       "name": "Clear all",
                                       "testId": "todo-clear",
@@ -604,6 +644,7 @@
                                       "children": []
                                     },
                                     {
+                                      "id": "n41",
                                       "role": "label",
                                       "name": "Item count",
                                       "testId": "todo-count",
