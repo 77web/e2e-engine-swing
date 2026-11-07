@@ -120,7 +120,6 @@ To make components easy to find, give them names (`setName`) and accessible name
 npm run check              # lint, type check, unit tests
 npm run test:integration   # starts the real sample app under the real agent (opens windows)
 npm run test:e2e           # the e2e suites in tests/
-npm run check:leaks        # searches the e2e output for the sample app's password
 ```
 
 ## License

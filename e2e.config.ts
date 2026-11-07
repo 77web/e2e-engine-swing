@@ -11,7 +11,7 @@ import { swing } from './dist/index.js';
 
 export default {
   targets: [{ name: 'desktop', engine: swing(), app: { appPath: 'swing-for-test/target/swing-for-test-0.1.0.jar' } }],
-  // Keep every trace, so `npm run check:leaks` searches passing runs too.
+  // Keep the traces of passing tests too.
   trace: 'on',
   // The test app accepts only demo / secret; the value is the app's, not a real credential.
   credentials: {
