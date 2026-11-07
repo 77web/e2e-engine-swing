@@ -90,6 +90,9 @@ final class Server {
         if ("perform".equals(method)) {
             return perform(id, request.get("params"));
         }
+        if ("keyboard".equals(method)) {
+            return keyboard(id, request.get("params"));
+        }
         if (!"snapshot".equals(method)) {
             return error(id, -32601, "method not found");
         }
@@ -122,6 +125,25 @@ final class Server {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return error(id, -32603, "perform interrupted");
+        }
+    }
+
+    /** Sends keys to whatever holds focus. Logs only the failure's class: typed text may be a password. */
+    private static Map<String, Object> keyboard(Long id, Object params) {
+        if (!(params instanceof Map<?, ?> fields)) {
+            return error(id, Perform.INVALID_PARAMS, "keyboard needs params");
+        }
+        try {
+            Perform.runQueued(() -> Perform.awaiting(Keys.queueKeyboard(fields)));
+            return result(id, Map.of());
+        } catch (Perform.Refused e) {
+            return error(id, e.code, e.getMessage());
+        } catch (InvocationTargetException e) {
+            System.err.println("e2e-swing-agent: keyboard failed: " + e.getCause().getClass().getName());
+            return error(id, -32603, "keyboard failed");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return error(id, -32603, "keyboard interrupted");
         }
     }
 

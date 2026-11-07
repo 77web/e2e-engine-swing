@@ -11,6 +11,8 @@ import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import javax.accessibility.Accessible;
 import javax.accessibility.AccessibleComponent;
@@ -36,6 +38,7 @@ import javax.swing.text.JTextComponent;
  * <p>The request fields, beside {@code node} and {@code action}:
  * <ul>
  *   <li>{@code value}: the text of a {@code fill}
+ *   <li>{@code key}: the key of a {@code press}; see {@link Keys#parseKey}
  *   <li>{@code option}: {@code {"label": ...}} or {@code {"index": ...}} for a {@code selectOption}
  *   <li>{@code direction} ({@code up}, {@code down}, {@code left}, {@code right}) and an optional
  *       {@code momentum} ({@code none}, {@code slow}, {@code fast}) for a {@code swipe}. A swipe
@@ -74,6 +77,16 @@ final class Perform {
         void run() throws Refused;
     }
 
+    /** What to wait for, off the event dispatch thread, after the action is queued. */
+    interface After {
+        void await() throws Refused, InterruptedException, InvocationTargetException;
+    }
+
+    /** Queues an action on the event dispatch thread and returns what to wait for, or null. */
+    interface Queued {
+        After queue() throws Refused;
+    }
+
     private Perform() {
     }
 
@@ -84,11 +97,19 @@ final class Perform {
      * @throws Refused if the action did not run, or a toggle did not change
      */
     static void run(Map<?, ?> params) throws Refused, InterruptedException, InvocationTargetException {
+        runQueued(() -> queue(params));
+    }
+
+    /**
+     * Queues an action, waits for the queue to reach it, then waits for what the action returned.
+     * Must not be called on the event dispatch thread.
+     */
+    static void runQueued(Queued queued) throws Refused, InterruptedException, InvocationTargetException {
         var refusal = new AtomicReference<Refused>();
-        var verify = new AtomicReference<Verify>();
+        var after = new AtomicReference<After>();
         SwingUtilities.invokeAndWait(() -> {
             try {
-                verify.set(queue(params));
+                after.set(queued.queue());
             } catch (Refused e) {
                 refusal.set(e);
             }
@@ -98,10 +119,30 @@ final class Perform {
         }
         // Runs after the queued action, or as soon as the action's modal dialog is processing events.
         SwingUtilities.invokeAndWait(() -> { });
-        if (verify.get() != null) {
+        if (after.get() != null) {
+            after.get().await();
+        }
+    }
+
+    /** Waits for a chain of queued steps, such as key events, to finish. */
+    static After awaiting(CompletableFuture<Void> done) {
+        return () -> {
+            try {
+                done.get();
+            } catch (ExecutionException e) {
+                throw new InvocationTargetException(e.getCause());
+            }
+            SwingUtilities.invokeAndWait(() -> { });
+        };
+    }
+
+    /** Runs a check on the event dispatch thread. */
+    private static After verifying(Verify verify) {
+        return () -> {
+            var refusal = new AtomicReference<Refused>();
             SwingUtilities.invokeAndWait(() -> {
                 try {
-                    verify.get().run();
+                    verify.run();
                 } catch (Refused e) {
                     refusal.set(e);
                 }
@@ -109,11 +150,11 @@ final class Perform {
             if (refusal.get() != null) {
                 throw refusal.get();
             }
-        }
+        };
     }
 
     /** Checks the node, queues the action, and returns a check to run afterwards, or null. */
-    private static Verify queue(Map<?, ?> params) throws Refused {
+    private static After queue(Map<?, ?> params) throws Refused {
         String action = (String) params.get("action");
         String nodeId = params.get("node") instanceof String id ? id : null;
         if (nodeId == null) {
@@ -131,12 +172,16 @@ final class Perform {
                 if (!(params.get("value") instanceof String value)) {
                     throw new Refused(INVALID_PARAMS, "fill needs a value");
                 }
-                queueSetText(editableText(nodeId, action), value);
+                JTextComponent text = editableText(nodeId, action);
+                Keys.remember(text);
+                queueSetText(text, value);
             }
             case "clear" -> queueSetText(editableText(nodeId, action), "");
             case "focus" -> {
-                Component component = actionableComponent(nodeId, action);
-                EventQueue.invokeLater(component::requestFocusInWindow);
+                return awaiting(Keys.queueFocus(actionableComponent(nodeId, action)));
+            }
+            case "press" -> {
+                return awaiting(Keys.queuePress(keyTarget(nodeId), params.get("key")));
             }
             case "check" -> {
                 return queueToggle(nodeId, action, true);
@@ -161,6 +206,20 @@ final class Perform {
             throw new Refused(NODE_STALE, "the node is gone");
         }
         return node;
+    }
+
+    /**
+     * Returns the component a {@code press} goes to: the node, or for a node that is not a component,
+     * such as a list item, the component that draws it.
+     */
+    private static Component keyTarget(String nodeId) throws Refused {
+        Accessible node = foundNode(nodeId);
+        Component component = node instanceof Component c ? c : owningComponent(node);
+        if (component == null) {
+            throw new Refused(UNSUPPORTED, "press needs a node drawn by a component, and this node is not");
+        }
+        checkActionable(component);
+        return component;
     }
 
     private static Component actionableComponent(String nodeId, String action) throws Refused {
@@ -299,6 +358,7 @@ final class Perform {
      */
     private static void queueClick(ClickTarget target, int button, int clicks) {
         Component c = target.component();
+        Keys.remember(c);
         int x = target.point().x;
         int y = target.point().y;
         int downMask = button == MouseEvent.BUTTON3 ? InputEvent.BUTTON3_DOWN_MASK : InputEvent.BUTTON1_DOWN_MASK;
@@ -341,7 +401,7 @@ final class Perform {
      * returns a check that the click changed it. A click that did nothing, such as on a selected
      * radio button for {@code uncheck}, is {@code NOT_ACTIONABLE}.
      */
-    private static Verify queueToggle(String nodeId, String action, boolean wanted) throws Refused {
+    private static After queueToggle(String nodeId, String action, boolean wanted) throws Refused {
         Accessible node = foundNode(nodeId);
         if (!(node instanceof JToggleButton button)) {
             throw new Refused(UNSUPPORTED, action + " needs a checkbox, radio button, or toggle button");
@@ -351,11 +411,11 @@ final class Perform {
             return null;
         }
         queueClick(target, MouseEvent.BUTTON1, 1);
-        return () -> {
+        return verifying(() -> {
             if (button.isSelected() != wanted) {
                 throw new Refused(NOT_ACTIONABLE, "the click did not change the state");
             }
-        };
+        });
     }
 
     // ---- Selection -----------------------------------------------------------------------------
