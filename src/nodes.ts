@@ -20,7 +20,9 @@ const roleMap: Record<string, string> = {
   "combo box": "combobox",
   "page tab list": "tablist",
   "page tab": "tab",
-  "frame": "window"
+  "frame": "window",
+  "list": "listbox",
+  "list item": "option",
 };
 
 export function projectWindows(windows: readonly RawNode[], revision: string): EngineSnapshot {

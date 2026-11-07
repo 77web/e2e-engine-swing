@@ -45,6 +45,19 @@ describe('projectWindows', () => {
     const actual = projectWindows([node({ states: ['showing'] })], 'test');
     expect(actual.root.children?.[0]?.states?.disabled).toBe(true);
   });
+
+  it('maps a list to a listbox and its items to options', () => {
+    const actual = projectWindows([node({
+      role: 'list',
+      children: [
+        node({ role: 'list item' }),
+        node({ role: 'list item', states: ['showing', 'enabled', 'selected'] }),
+      ] })], 'test');
+    expect(actual.root.children?.[0]?.role).toBe('listbox');
+    expect(actual.root.children?.[0]?.children?.[0]?.role).toBe('option');
+    expect(actual.root.children?.[0]?.children?.[0]?.states?.selected).toBeUndefined();
+    expect(actual.root.children?.[0]?.children?.[1]?.states?.selected).toBe(true);
+  });
 });
 
 describe('usableTestId', () => {
