@@ -1,2 +1,11 @@
 e2e-engine-swing
 Copyright 2026 Hiromi Hishida <hishida77web@gmail.com>
+
+Portions of this product are derived from e2e (https://github.com/tester-army/e2e),
+licensed under the Apache License, Version 2.0, which carries the following notice:
+
+  e2e
+  Copyright 2026 TesterArmy, Inc.
+
+  This product includes software developed at TesterArmy, Inc.
+  (https://tester.army).

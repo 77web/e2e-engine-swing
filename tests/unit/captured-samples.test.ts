@@ -3,6 +3,9 @@
  * `observe` projects them, against the committed tree each one reads as. A change to how the engine
  * reads a real tree shows up as a diff of `tests/fixtures/<sample>.tree.txt`, without a JVM.
  * `E2E_GOLDEN_UPDATE=1` rewrites the trees from the samples; review the diff like any other change.
+ *
+ * Adapted from e2e's `packages/mobile/tests/unit/captured-snapshots.test.ts` (Apache-2.0, see NOTICE),
+ * changed to read the agent's samples and the states and fields a Swing tree has.
  */
 
 import { readFileSync, writeFileSync } from 'node:fs';
