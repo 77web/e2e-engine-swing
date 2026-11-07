@@ -47,6 +47,7 @@ Build this repository as shown above, then point a target at your app's jar:
 ```ts
 // e2e.config.ts
 import type { E2EConfig } from 'e2e';
+import { anthropic } from '@ai-sdk/anthropic';
 import { swing } from 'path/to/e2e-engine-swing/dist/index.js';
 
 export default {
@@ -60,6 +61,8 @@ export default {
       },
     },
   ],
+  // optional: only tests with agent steps need a model
+  agents: { default: { model: anthropic('claude-sonnet-5-5') } },
 } satisfies E2EConfig;
 ```
 
@@ -84,6 +87,30 @@ test('signs in', async ({ screen }) => {
   await expect(screen.getByRole('dialog', 'Signed in')).toBeVisible();
 });
 ```
+
+### Agent steps
+
+Describe a goal in natural language and e2e's agent drives the app to reach it. Agent steps need a model in `agents` (above): install `ai` and a provider package such as `@ai-sdk/anthropic`, and set its API key. See e2e's [models](https://e2e.com/docs/models) docs.
+
+```ts
+import { credentials, expect, test } from 'e2e';
+
+test('signs in, then adds a todo', async ({ agent, screen }) => {
+  const demo = credentials.user('demo');
+  // The model sees only the password's name; the runner types the value into the JPasswordField.
+  await agent.act('Sign in', {
+    params: { username: demo.username, password: demo.password },
+  });
+  await agent.assert('a dialog says the user signed in');
+
+  await agent.act('Close the dialog, open the Todos tab, and add a todo "Buy milk"');
+
+  // Mix agent steps with exact checks.
+  await expect(screen.getByTestId('todo-count')).toContainText('1 item');
+});
+```
+
+The agent reads the same Swing accessibility tree as the locators, as a redacted text snapshot. The engine offers it the `tap` and `type` tools for now (`type_secret` for a `Secret` param), and no screenshots, so `vision` is not available.
 
 To make components easy to find, give them names (`setName`) and accessible names. A `JLabel` bound with `setLabelFor` supplies the accessible name of its field.
 
