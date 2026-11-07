@@ -1,6 +1,7 @@
 target/
 node_modules/
 dist/
+.e2e/
 .idea/
 .DS_Store
 # for local dev

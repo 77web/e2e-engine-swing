@@ -24,6 +24,8 @@
     "test:watch": "vitest",
     "test:unit": "vitest run --project unit",
     "test:integration": "E2E_SWING=1 vitest run --project integration",
+    "test:e2e": "npm run build && e2e run",
+    "check:leaks": "node scripts/check-leaks.mjs",
     "check": "npm run lint && npm run typecheck && npm run test:unit"
   },
   "peerDependencies": {
